@@ -1,16 +1,14 @@
 %{
-char* outputString = "";
+
 %}
 %%
-"**"[.]*$	{} // remove single line comment
-
-[a-zA-Z]+	{}
-\n		{}
-.		{}
+"**".*			{} // remove single line comment
+"{"[.\n]*"}"		{} // remove block comments
+\"[.]*\"		{ printf("%s", yytext); } // print strings
+.			{ printf("%s", yytext); } // print everything else
 %%
 int main()
 {
 	yylex();
-	printf("%d\n", outputString);
 	return 0;
 }
