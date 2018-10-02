@@ -1,11 +1,13 @@
 %{
-
+int comment = 0;
 %}
 %%
 "**".*			{} // remove single line comment
-"{"(.*\n?)*"}"		{} // remove block comments
 \".*\"			{ printf("%s", yytext); } // print strings
-.			{ printf("%s", yytext); } // print everything else
+"{"			{ comment = 1; } // start block comments
+"}"			{ comment = 0; } // end block comments
+.			{ if(comment == 0){ printf("%s", yytext);} }
+\n			{ if(comment == 0){ printf("%s", yytext);} }
 %%
 int main()
 {
