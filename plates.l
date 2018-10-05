@@ -16,11 +16,12 @@ NUMBER		[0-9]{1,6}[ \t\n]+
 {OLDYEAR}-{OLDCOUNTY}-{NUMBER}	{	char ystr[2];
 					strncpy(ystr, yytext, 2);
 					int y = atoi(ystr);
-					if(y>12){y+=2000;}
+					if(y<=12){y+=2000;}
 					else{y+=1900;}
 					printf("%d\n", 2018-y);
 				}
-.*[ \t\n]				{ printf("INVALID\n"); }
+.+[ \t\n]			{ printf("INVALID\n"); }
+\n				{ }
 
 %%
 int main()
