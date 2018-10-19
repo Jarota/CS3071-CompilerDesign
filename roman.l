@@ -1,16 +1,17 @@
 %{
-
+#include <stdio.h>
+#include "roman.tab.h"
 %}
 %%
-"I" 	{ return I; }
-"V" 	{ return V; }
-"X" 	{ return X; }
-"L" 	{ return L; }
-"C" 	{ return C; }
-"D" 	{ return D; }
-"M" 	{ return M; }
-\n	{ return EOL }
-.	{ yyerror("Mystery character\n"); }
+I		{ return ONE; }
+V 		{ return FIVE; }
+X		{ return TEN; }
+L 		{ return FIFTY; }
+C 		{ return HUNDRED; }
+D 		{ return FIVEHUNDRED; }
+M 		{ return THOUSAND; }
+\n		{ return EOL }
+.		{ yyerror("syntax error\n"); exit(0); }
 %%
 int main()
 {
