@@ -10,11 +10,12 @@ L 		{ return FIFTY; }
 C 		{ return HUNDRED; }
 D 		{ return FIVEHUNDRED; }
 M 		{ return THOUSAND; }
-\n		{ return EOL }
-.		{ yyerror("syntax error\n"); exit(0); }
+\n		{ return EOL; }
+[ \t]*		{ }
+.		{ yyerror(); }
 %%
-int main()
+/*int main()
 {
 	yylex();
 	return 0;
-}
+}*/
