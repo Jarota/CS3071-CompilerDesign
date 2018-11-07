@@ -17,15 +17,18 @@ valid: lowprecedence EOL	{ char romanNumeral[50]; intToRoman($1, romanNumeral); 
 | valid lowprecedence EOL	{ char romanNumeral[50]; intToRoman($2, romanNumeral); printf("%s\n", romanNumeral); }
 ;
 
-lowprecedence: highprecedence ADD highprecedence	{ $$ = $1 + $3; }
-| highprecedence SUB highprecedence			{ $$ = $1 - $3; }
+lowprecedence: lowprecedence ADD highprecedence		{ $$ = $1 + $3; }
+| lowprecedence SUB highprecedence			{ $$ = $1 - $3; }
 | highprecedence					{ $$ = $1; }
 ;
 
-highprecedence: number DIV number		{ $$ = $1 / $3; }
-| number MUL number				{ $$ = $1 * $3; }
-| number					{ $$ = $1; }
-| OP lowprecedence CP				{ $$ = $2; }
+highprecedence: highprecedence DIV operand	{ $$ = $1 / $3; }
+| highprecedence MUL operand			{ $$ = $1 * $3; }
+| operand					{ $$ = $1; }
+;
+
+operand: number		{ $$ = $1; }
+| OP lowprecedence CP	{ $$ = $2; }
 ;
 
 number: thousands 	{ $$ = $1; }
