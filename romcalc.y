@@ -1,16 +1,20 @@
 %{
-#  include <stdio.h>
-#  include <stdlib.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 void yyerror();
 int yylex();
 int yyparse();
+
+void intToRoman(int x, char* result);
+
 %}
 
 
 %token ADD SUB DIV MUL OP CP ONE FIVE TEN FIFTY HUNDRED FIVEHUNDRED THOUSAND EOL
 %%
-valid: lowprecedence EOL	{}
-| valid lowprecedence EOL
+valid: lowprecedence EOL	{ char romanNumeral[50]; intToRoman($1, romanNumeral); printf("%s\n", romanNumeral); }
+| valid lowprecedence EOL	{ char romanNumeral[50]; intToRoman($2, romanNumeral); printf("%s\n", romanNumeral); }
 ;
 
 lowprecedence: highprecedence ADD highprecedence	{ $$ = $1 + $3; }
@@ -21,6 +25,7 @@ lowprecedence: highprecedence ADD highprecedence	{ $$ = $1 + $3; }
 highprecedence: number DIV number		{ $$ = $1 / $3; }
 | number MUL number				{ $$ = $1 * $3; }
 | number					{ $$ = $1; }
+| OP lowprecedence CP				{ $$ = $2; }
 ;
 
 number: thousands 	{ $$ = $1; }
@@ -74,6 +79,34 @@ void yyerror()
   exit(0);
 }
 
+void intToRoman(int x, char* result)
+{
+	if ( x == 0 ) {
+		*result++ = 'Z';
+		return;
+	}
+	if ( x < 0 ) {
+		*result++ = '-';
+		x *= -1;
+	}
+
+	char *huns[] = {"", "C", "CC", "CCC", "CD", "D", "DC", "DCC", "DCCC", "CM"};
+	char *tens[] = {"", "X", "XX", "XXX", "XL", "L", "LX", "LXX", "LXXX", "XC"};
+	char *ones[] = {"", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX"};
+	int   size[] = { 0,   1,    2,     3,    2,   1,    2,     3,      4,    2};
+
+	while (x >= 1000) {
+		*result++ = 'M';
+		x -= 1000;
+	}
+
+	strcpy (result, huns[x/100]); result += size[x/100]; x = x % 100;
+	strcpy (result, tens[x/10]);  result += size[x/10];  x = x % 10;
+	strcpy (result, ones[x]);     result += size[x];
+
+	*result++ = '\0';
+
+}
 
 int main()
 {
