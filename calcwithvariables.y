@@ -13,12 +13,31 @@ int variables[26];
 
 %token ASSIGN PRINT NUM VAR ADD SUB DIV MUL SC
 %%
-
-valid: VAR ASSIGN expr SC	{}
-| PRINT VAR SC			{}
+valid: stmt
+| valid stmt
 ;
 
-expr:
+stmt: VAR ASSIGN low SC	{ variables[$1-97] = $3; }
+| PRINT VAR SC		{ printf("%d\n", variables[$2-97]); }
+;
+
+low: low ADD high	{ $$ = $1 + $3; }
+| low SUB high		{ $$ = $1 - $3; }
+| high			{ $$ = $1; }
+;
+
+high: high MUL operand	{ $$ = $1 * $3; }
+| high DIV operand	{ $$ = $1 / $3; }
+| operand		{ $$ = $1; }
+;
+
+operand: SUB value	{ $$ = (-1) * $2; }
+| value			{ $$ = $1; }
+;
+
+value: VAR		{ $$ = $1; }
+| NUM			{ $$ = $1; }
+;
 
 %%
 void yyerror()
