@@ -5,8 +5,8 @@
 %%
 ":="		{ return ASSIGN; }
 "print "	{ return PRINT; }
-[0-9]		{ return NUM; }
-[a-z]		{ return VAR; }
+[0-9]		{ yylval = atoi(yytext); return NUM; }
+[a-z]		{ yylval = yytext[0]; return VAR; }
 "+"		{ return ADD; }
 "-"		{ return SUB; }
 "/"		{ return DIV; }

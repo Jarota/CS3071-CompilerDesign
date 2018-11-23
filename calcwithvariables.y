@@ -35,7 +35,7 @@ operand: SUB value	{ $$ = (-1) * $2; }
 | value			{ $$ = $1; }
 ;
 
-value: VAR		{ $$ = $1; }
+value: VAR		{ $$ = variables[$1-97]; }
 | NUM			{ $$ = $1; }
 ;
 
